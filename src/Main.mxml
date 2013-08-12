@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" 
+						xmlns:crm="com.radium.crm.*"
+						xmlns:components="com.radium.crm.view.components.*"
+						layout="absolute" 
+						width="500" height="300"
+						horizontalScrollPolicy="off"
+						verticalScrollPolicy="off"
+						creationComplete="creationCompleteHandler( )"
+						showFlexChrome="false">
+	
+	<mx:Style source="resource/style.css" />
+	
+	<crm:ApplicationContext contextView="{this}" />
+	
+	<mx:Fade id="fadeIn" duration="100" alphaFrom="0" alphaTo="1" />
+	<mx:Fade id="fadeOut" duration="100" alphaFrom="1" alphaTo="0" />
+	
+	<mx:Canvas width="100%" height="52" backgroundColor="#404040" />
+	<components:GradientCanvas id="gradientCanvas" top="52" width="100%" height="248" styleName="gradientCanvas" />
+		
+	<!-- Main view oomponents -->
+	
+	<mx:ViewStack id="stack" width="100%" height="100%" >
+		<components:LoaderView id="loaderView" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:PrivacyView id="privacyView" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:SignupView id="signupView" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:PhoneSelectionView id="phoneSelectionView" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:MainView id="mainView" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+	</mx:ViewStack>
+	
+	<components:Header top="15" right="15" />
+	<components:Footer bottom="23" right="20" width="100%" />
+	<components:MessageTray bottom="-8" left="10" />
+	
+	<mx:Script>
+		<![CDATA[
+			import com.radium.crm.model.Constants;
+			import com.radium.crm.view.components.MainView;
+			import com.radium.crm.view.components.SignupView;
+			
+			import mx.collections.ArrayCollection;
+			import mx.containers.FormItem;
+			import mx.controls.TextInput;
+			import mx.controls.scrollClasses.ScrollBar;
+			import mx.controls.scrollClasses.ScrollThumb;
+			import mx.core.UIComponent;
+			import mx.core.UITextField;
+			
+			private var _dockImage:BitmapData ;
+			private var _autoDock:Boolean ;
+			private var _autoDockTimer:Timer ;
+			
+			// PUBLIC METHODS
+			
+			public function showMainView( e:Event = null ):void
+			{
+				stack.selectedChild = mainView ;
+			}
+			
+			public function showLoaderView( e:Event = null ):void
+			{
+				stack.selectedChild = loaderView ;
+			}
+			
+			/**
+			 * Clears input fields and utomatically undock the application if the user is being prompted for login details.
+			 */
+			
+			public function showSignupView( ):void
+			{
+				stack.selectedChild = signupView ;
+				signupView.reset( ) ;
+				undock( ) ;
+			}
+			
+			/**
+			 * Shows all synced devices in the selection view
+			 * @param devices	A list of synced devices detected on the machine
+			 */
+					
+			public function showPhoneSelectionView( devices:ArrayCollection ):void
+			{
+				stack.selectedChild = phoneSelectionView ;
+				phoneSelectionView.deviceData = devices ;
+				undock( ) ;
+			}
+			
+			public function showPrivacyView( ):void
+			{
+				stack.selectedChild = privacyView ;
+				privacyView.addEventListener( Event.COMPLETE, showMainView ) ;
+			}
+			
+			/**
+			 * Takes the user back to the signup view whenever a login error is displayed.
+			 */
+			
+			public function showLoginError( ):void
+			{
+				stack.selectedChild = signupView ;
+				signupView.showErrorMessage( ) ;
+			}
+			
+			/**
+			 * When the autoDock flag is true the app will attempt to minimize itself in the system tray
+			 */
+			
+			public function autoDock( ):void
+			{
+				if( stage.nativeWindow.visible ) return ;
+				_autoDock = true ;
+			}
+			
+			/**
+			 * Minimize to the system tray. 
+			 */
+			
+			public function dock( ):void 
+			{
+				/**
+				 * If the tray icon does not yet exist, the autoDock flag will be set to true and the application 
+			 	 * will attempt to dock as soon as the image has been loaded. 
+				 */
+				
+				if( !_dockImage ) 
+				{
+					autoDock( ) ;
+					return ;
+				}
+				
+				var os:String = Capabilities.os.toLowerCase( ) ;
+				
+				if( os.indexOf( "windows" ) == -1 )
+				{
+					// minimize to system tray (Windows)
+					stage.nativeWindow.minimize( ) ;
+					_autoDock = false ;
+				}
+
+				else
+				{
+					// minimize to dock (OSX)
+					stage.nativeWindow.visible = false ;
+					NativeApplication.nativeApplication.icon.bitmaps = [ _dockImage ] ;
+					_autoDock = false ;
+				}
+			}
+			
+			/**
+			 * Restores the docked application
+			 */
+			
+			public function undock( e:Event = null ):void 
+			{
+				var os:String = Capabilities.os.toLowerCase( ) ;
+				
+				if( os.indexOf( "windows" ) == -1 )
+				{
+					stage.nativeWindow.restore( ) ;
+					_autoDock = false ;
+				}
+				
+				else
+				{
+					stage.nativeWindow.visible = true;
+					stage.nativeWindow.orderToFront( ) ;
+					
+					NativeApplication.nativeApplication.icon.bitmaps = [ ] ;
+					
+					_autoDock = false ;
+				}
+			}
+			
+			// PRIVATE METHODS
+			
+			/**
+			 * Creates the system tray menu
+			 */
+			
+			private function createSystrayRootMenu( ):NativeMenu
+			{
+				var menu:NativeMenu = new NativeMenu( ) ;
+				var openNativeMenuItem:NativeMenuItem = new NativeMenuItem( "Open" ) ;
+				var exitNativeMenuItem:NativeMenuItem = new NativeMenuItem( "Exit" ) ;
+				
+				openNativeMenuItem.addEventListener( Event.SELECT, undock ) ;
+				exitNativeMenuItem.addEventListener( Event.SELECT, closeApplication ) ;
+				
+				menu.addItem( openNativeMenuItem ) ;
+				menu.addItem( new NativeMenuItem( "", true ) ) ;
+				menu.addItem( exitNativeMenuItem ) ;
+				
+				return menu;
+			}
+			
+			private function setSystemTrayProperties( ):void
+			{
+				SystemTrayIcon( NativeApplication.nativeApplication.icon ).tooltip = Constants.APPLICATION_NAME ;
+				SystemTrayIcon( NativeApplication.nativeApplication.icon ).addEventListener( MouseEvent.CLICK, undock ) ;
+				stage.nativeWindow.addEventListener( NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING, nativeWindowMinimizedHandler ) ; 
+			}
+		
+			// EVENT HANDLERS
+			
+			private function creationCompleteHandler( ):void
+			{
+				stack.addEventListener( MouseEvent.MOUSE_DOWN, startMove ) ;
+				
+				var os:String = Capabilities.os.toLowerCase( ) ;
+				var icon_url:String = ( os.indexOf( "windows" ) == -1 ) ? "data/icons/icon128x128.png" : "data/icons/icon16x16.png" ;
+				
+				var loader:Loader = new Loader( ) ;
+				loader.contentLoaderInfo.addEventListener( Event.COMPLETE, dockIconLoadHandler ) ;
+				loader.load( new URLRequest( icon_url ) ) ;
+			}
+			
+			/**
+			 * Enables dragging of the application window.
+			 * The drag functionality should only start if the user is not currently clicking on an interactive UI
+			 * component such as a text field or a scrollbar.
+			 */
+			
+			private function startMove( e:MouseEvent ):void 
+			{
+				if( e.target is UITextField || e.target is ScrollThumb ) { }
+				else stage.nativeWindow.startMove( ) ;
+       		}
+			
+			private function dockIconLoadHandler( e:Event ):void 
+			{
+				_dockImage = e.target.content.bitmapData ;
+				
+				if ( NativeApplication.supportsSystemTrayIcon )
+				{
+					setSystemTrayProperties( ) ;
+					SystemTrayIcon( NativeApplication.nativeApplication.icon ).menu = createSystrayRootMenu( ) ;
+					attemptDock( ) ;
+				}
+			}
+			
+			/**
+			 * Captures the minimize event when the user tries to manually minimize the window, and dock the application
+			 * instead
+			 */
+			
+			private function nativeWindowMinimizedHandler( e:NativeWindowDisplayStateEvent ):void 
+			{
+				if( e.afterDisplayState == NativeWindowDisplayState.MINIMIZED ) 
+				{
+					e.preventDefault( ) ;
+					dock( ) ;
+				}
+			}
+			
+			private function closeApplication( e:Event = null ):void 
+			{
+				stage.nativeWindow.close( ) ;
+			}
+			
+			/**
+			 * Attempts to dock the application. The docking will be canceled if the user is currently being prompted
+			 * for login details or device selection.
+			 */
+			
+			private function attemptDock( e:TimerEvent = null ):void
+			{
+				if( !_autoDock || stage.nativeWindow.visible == false ||
+					stack.selectedChild == signupView || stack.selectedChild == phoneSelectionView  )
+				{
+					_autoDock = false ;
+				}
+				
+				else
+				{
+					if( stack.selectedChild != signupView && stack.selectedChild != phoneSelectionView )
+					{
+						dock( ) ;
+					}
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:WindowedApplication>

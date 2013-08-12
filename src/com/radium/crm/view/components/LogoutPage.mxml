@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%" height="100%">
+		   
+	<mx:VBox top="60" left="180">
+		<mx:Form>
+			<mx:FormItem>
+				<mx:Button label="Log out" styleName="UIButton" click="logoutHandler( )"/>
+			</mx:FormItem>
+
+		</mx:Form>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			import com.radium.crm.model.vo.SettingsVO;
+			import com.radium.crm.events.UpdateEvent ;
+			import com.radium.crm.events.ConnectionEvent ;
+			
+			
+			// EVENT HANDLERS
+			
+			private function logoutHandler( ):void
+			{
+				dispatchEvent( new Event( ConnectionEvent.LOGOUT, true ) ) ;
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

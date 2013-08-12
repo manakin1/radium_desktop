@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   xmlns:components="com.radium.crm.view.components.*"
+		   width="100%">
+
+	<mx:VBox top="50" left="30">
+	
+		<mx:Text width="400" text="We detected more than one iPhone to sync on your computer. Choose the one you want to sync with Radium:" />
+		
+		<mx:Spacer height="10" />
+		
+		<mx:HBox>
+			<mx:ComboBox id="serialCombo" width="250" dataProvider="{_deviceData}" labelField="serialNumber" />
+			<mx:Button label="OK" click="submitHandler( )" />
+		</mx:HBox>
+		
+		<mx:Spacer height="10" />
+		
+		<mx:Text condenseWhite="true">
+			<mx:htmlText>
+				<![CDATA[
+					* To find your iPhone's serial number do as follows:<br/><br/>
+					1. From the main screen on your iPhone/iPod Touch, tap the "Settings" icon.<br/>
+					2. On the Settings screen, tap the General section.<br/>
+					3. Now tap the About section.<br/>
+					4. Scroll down a ways and you will see an item called "Serial Number". 
+				]]>
+			</mx:htmlText>
+		</mx:Text>
+		
+	</mx:VBox>
+	
+
+	<mx:Script>
+		<![CDATA[
+			import com.radium.crm.model.Constants;
+			import com.radium.crm.model.vo.CredentialsVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.UIComponent;
+
+			[Bindable]
+			private var _deviceData:ArrayCollection ;
+			
+			// ACCESSOR METHODS
+			
+			public function set deviceData( data:ArrayCollection ):void
+			{
+				_deviceData = data ;
+			}
+			
+			// PRIVATE HANDLERS
+			
+			private function submitHandler( ):void
+			{
+				dispatchEvent( new Event( Event.SELECT ) ) ;
+			}
+
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

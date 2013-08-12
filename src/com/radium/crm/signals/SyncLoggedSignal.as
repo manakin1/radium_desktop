@@ -1,0 +1,1 @@
+package com.radium.crm.signals{		import org.osflash.signals.Signal ;		public class SyncLoggedSignal extends Signal 	{				public function SyncLoggedSignal( )		{			super( String ) ;		}			}}

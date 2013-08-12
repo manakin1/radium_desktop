@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 width="100%" 
+		 horizontalAlign="right" 
+		 verticalAlign="middle">
+		 
+	<mx:Image source="@Embed( '../../../../../resource/logo.swf' )" buttonMode="true" useHandCursor="true" click="clickHandler( event )"/>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import com.radium.crm.model.Constants;
+			import flash.net.navigateToURL;
+			
+			private function clickHandler( e:Event ):void
+			{
+				navigateToURL( new URLRequest( Constants.SITE_URL ), "_blank" ) ;
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

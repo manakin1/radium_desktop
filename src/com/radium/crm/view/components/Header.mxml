@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" height="30" horizontalAlign="right" >
+	
+	<mx:Image top="5" buttonMode="true"
+			  source="@Embed( '../../../../../resource/close_button.png' )" 
+			  click="minimizeHandler( )"/>	
+	
+	<mx:Script>
+		<![CDATA[
+		
+			import com.radium.crm.events.WindowEvent ;
+		
+			// EVENT HANDLERS
+			
+			private function minimizeHandler( ):void
+			{
+				dispatchEvent( new WindowEvent( WindowEvent.MINIMIZE, true ) ) ;
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

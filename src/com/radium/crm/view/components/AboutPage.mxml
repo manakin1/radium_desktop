@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%" height="100%">
+		   
+	<mx:VBox left="40" top="60">
+		
+		<mx:Text id="versionField" text="" />
+		<mx:Text id="syncField" text="" />
+		<mx:TextArea id="debugField" width="300" height="120" text="" visible="false" includeInLayout="false" />
+			
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.radium.crm.model.Constants;
+			import com.radium.crm.model.ContentModel;
+			
+			[Bindable]
+			public var _message:String ;
+		
+			
+			// PUBLIC METHODS
+			
+			
+			public function setVersionText( value:String ):void
+			{
+				versionField.text = "Radium Desktop version " + value ;
+			}
+			
+			public function setDebugText( value:String ):void
+			{
+				debugField.text = value ;
+			}
+			
+			public function updateLastSyncDate( str:String, status:String ):void
+			{
+				if( !status ) status = Constants.STATUS_SUCCESS ;
+				syncField.htmlText = "Last sync at " + str + "<br/>Status: " + status ;
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

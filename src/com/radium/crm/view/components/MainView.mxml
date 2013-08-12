@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   xmlns:components="com.radium.crm.view.components.*"
+		   horizontalScrollPolicy="off"
+		   verticalScrollPolicy="off"
+		   width="100%" height="100%">
+	
+	<mx:Fade id="fadeIn" duration="100" alphaFrom="0" alphaTo="1" />
+	<mx:Fade id="fadeOut" duration="100" alphaFrom="1" alphaTo="0" />
+	
+	<mx:HBox horizontalAlign="right" top="55" right="15" >
+		<mx:Text text="{'Logged in as ' + _name}" />
+	</mx:HBox>
+	
+	<mx:HBox id="buttonHolder" height="52" horizontalGap="0" >
+		<mx:Button styleName="tabButtonSelected" label="Sync" click="clickHandler( event )" />
+		<mx:Button styleName="tabButton" label="Settings" click="clickHandler( event )" />	
+		<mx:Button styleName="tabButton" label="About" click="clickHandler( event )" />	
+		<mx:Button styleName="tabButton" label="Log Out" click="clickHandler( event )" />	
+		<mx:Button styleName="tabButton" enabled="false" click="clickHandler( event )" />	
+	</mx:HBox>
+	
+	<mx:ViewStack id="tabs" width="100%" height="248" top="52" >
+		<components:SyncPage id="syncPage" settings="{_settings}" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:SettingsPage id="settingsPage" settings="{_settings}" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+		<components:AboutPage id="aboutPage" hideEffect="{fadeOut}" showEffect="{fadeIn}"  />
+		<components:LogoutPage id="logoutPage" hideEffect="{fadeOut}" showEffect="{fadeIn}" />
+	</mx:ViewStack>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import com.radium.crm.events.UpdateEvent;
+			import com.radium.crm.model.vo.SettingsVO;
+			
+			[Bindable]
+			private var _settings:SettingsVO ;
+			
+			[Bindable]
+			private var _name:String = "" ;
+			
+			// PUBLIC METHODS
+			
+			public function updateSettings( settings:SettingsVO ):void
+			{
+				_settings = settings ;
+			}
+			
+			public function updateName( str:String ):void
+			{
+				_name = str ;
+			}
+			
+			public function reset( ):void
+			{
+				tabs.selectedChild = syncPage ;
+				updateButtons( buttonHolder.getChildren( )[0] ) ;
+			}
+			
+			// PRIVATE METHODS
+			
+			private function updateButtons( activeButton:Button ):void
+			{
+				for each( var btn:Button in buttonHolder.getChildren( ) )
+				{
+					btn.styleName = ( btn == activeButton ) ? "tabButtonSelected" : "tabButton" ;
+				}
+				
+				tabs.selectedIndex = buttonHolder.getChildren( ).indexOf( activeButton ) ;
+			}
+			
+			// EVENT HANDLERS
+			
+			private function clickHandler( e:Event ):void
+			{	
+				updateButtons( Button( e.currentTarget ) ) ;
+
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

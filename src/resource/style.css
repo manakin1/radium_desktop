@@ -1,0 +1,98 @@
+CheckBox
+{
+	color: #ffffff ;
+	text-roll-over-color: #ffffff ;
+}
+
+TextInput
+{
+	font-family: Verdana ;
+	color: #666666 ;
+}
+
+Label
+{
+	font-family: Verdana ;
+	color: #ffffff ;
+}
+
+FormItem
+{
+	font-family: Verdana ;
+	font-size: 14px ;
+}
+
+Button
+{
+	font-family: Verdana ;
+	color: #333333 ;
+	text-roll-over-color: #ffffff ;
+}
+
+Button.tabButton 
+{
+	upSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	overSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	downSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	disabledSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	
+	font-family: Verdana ;
+	font-weight: normal ;
+	color: #afafaf ;
+	font-size: 16px ;
+}
+
+Button.tabButtonSelected
+{
+	upSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	overSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	downSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	disabledSkin: Embed( source="../../src/resource/skins.swf", symbol="TabButtonSkin" ) ;
+	
+	font-family: Verdana ;
+	font-weight: normal ;
+	color: #ffffff ;
+	font-size: 16px ;
+}
+
+Button.UIButton
+{
+	upSkin: Embed( source="../../src/resource/skins.swf", symbol="UIButtonSkin" ) ;
+	overSkin: Embed( source="../../src/resource/skins.swf", symbol="UIButtonSkin" ) ;
+	downSkin: Embed( source="../../src/resource/skins.swf", symbol="UIButtonSkin" ) ;
+	disabledSkin: Embed( source="../../src/resource/skins.swf", symbol="UIButtonSkin" ) ;
+	
+	font-family: Verdana ;
+	font-weight: normal ;
+	color: #000000 ;
+	text-rollover-color: #666666 ;
+	font-size: 12px ;
+}
+
+.gradientCanvas
+{
+	fill-colors: #404040, #2c2c2c ;
+	fill-alphas: 1.0, 1.0 ;
+	corner-radius: 0 ;
+}
+
+.info
+{
+	font-family: Verdana ;
+	font-size: 12px ;
+	color: #ffffff ;
+}
+
+.alert
+{
+	font-family: Verdana ;
+	font-size: 10px ;
+	color: #ff0000 ;
+}
+
+.link
+{
+	text-decoration: underline ;
+	font-size: 12px ;
+	color: #999999 ;
+}

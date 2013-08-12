@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   xmlns:components="com.radium.crm.view.components.*"
+		   width="100%">
+
+	<mx:VBox top="80" left="90">
+	
+		<mx:Form verticalGap="8">
+			<mx:FormItem>
+				 <mx:TextInput id="email" text="{EMAIL_DEFAULT}" width="270" height="26" focusIn="fieldFocusInHandler( event )" focusOut="fieldFocusOutHandler( event )"/>
+			</mx:FormItem>
+			<mx:FormItem>
+				 <mx:TextInput id="password" text="{PASSWORD_DEFAULT}" width="270" height="26" change="passwordChangeHandler( )" focusIn="fieldFocusInHandler( event )" focusOut="fieldFocusOutHandler( event )"/>
+			</mx:FormItem>
+			<mx:FormItem>
+            	<mx:Button label="Login" id="loginButton" styleName="UIButton"
+                		   click="submit( email.text, password.text );"/>
+            </mx:FormItem>
+        	<mx:FormItem>
+        		<mx:Spacer height="35" />
+        		<mx:Text text="" id="errorField" styleName="alert" />
+        	</mx:FormItem>
+		</mx:Form>
+	</mx:VBox>
+	
+	<mx:HBox left="20" top="200">
+		<mx:Label text="Change server:" />
+		<mx:Text id="serverField" width="270" text="{serverInputField.text}" click="serverField_clickHandler( event )" />
+		<mx:TextInput id="serverInputField" width="270" text="{_defaultServerURL}" focusOut="serverInputField_focusOutHandler( event )" change="serverInputField_changeHandler( event )" 
+					  includeInLayout="false" visible="false" />
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import com.radium.crm.model.Constants;
+			import com.radium.crm.model.vo.CredentialsVO;
+			
+			import mx.core.UIComponent;
+			
+			private var _loginData:CredentialsVO ;
+
+			[Bindable]
+			private var _defaultServerURL:String ;
+			
+			private const EMAIL_DEFAULT:String						= "Email" ;
+			private const PASSWORD_DEFAULT:String					= "Password" ;
+			
+			// ACCESSOR METHODS
+			
+			public function get loginData( ):CredentialsVO
+			{
+				return _loginData ;
+			}
+			
+			public function set defaultServerURL( value:String ):void
+			{
+				_defaultServerURL = value ;
+			}
+			
+			// PUBLIC METHODS
+			
+			public function reset( ):void
+			{
+				if( errorField ) errorField.text = "" ;
+				
+				if( password ) 
+				{
+					password.text = PASSWORD_DEFAULT ;
+					password.displayAsPassword = false ;
+				}
+				
+				if( email ) email.text = EMAIL_DEFAULT ;
+			}
+			
+			public function showErrorMessage( ):void
+			{
+				if( errorField ) errorField.text = "Authentication failed" ;
+			}
+			
+			// PRIVATE HANDLERS
+			
+			private function submit( email:String, password:String ):void
+			{
+				_loginData = new CredentialsVO( email, password ) ;
+				dispatchEvent( new Event( "submit" ) ) ;
+			}
+			
+			private function passwordChangeHandler( ):void
+			{
+				if( password.displayAsPassword == false )
+				{
+					password.displayAsPassword = true ;
+				}
+			}
+			
+			private function fieldFocusInHandler( e:Event ):void
+			{
+				var name:String = e.currentTarget.id ;
+				var field:TextInput = TextInput( e.currentTarget ) ;
+				var default_str:String = name.toUpperCase( ) + "_DEFAULT" ;
+				
+				if( field.text == this[ default_str ] ) field.text = "" ;
+				
+				if( field == password && password.displayAsPassword == false )
+				{
+					password.displayAsPassword = true ;
+				}
+			}
+			
+			private function fieldFocusOutHandler( e:Event ):void
+			{
+				var name:String = e.currentTarget.id ;
+				var field:TextInput = TextInput( e.currentTarget ) ;
+				var default_str:String = name.toUpperCase( ) + "_DEFAULT" ;
+				
+				if( field.text == "" ) 
+				{
+					field.text = this[ default_str ] ;
+					if( field == password ) field.displayAsPassword = false ;
+				}
+			}
+
+			private function serverInputField_focusOutHandler( e:FocusEvent ):void
+			{
+				if( serverField.text.indexOf( "." ) == -1 ) serverField.text = _defaultServerURL ;
+				
+				serverField.visible = serverField.includeInLayout = true ;
+				serverInputField.visible = serverInputField.includeInLayout = false ;
+			}
+
+			private function serverInputField_changeHandler( e:Event ):void
+			{
+				if( serverField.text.indexOf( "." ) != -1 ) dispatchEvent( new Event( "serverUpdated" ) ) ;
+			}
+
+			protected function serverField_clickHandler( e:MouseEvent ):void
+			{
+				serverField.visible = serverField.includeInLayout = false ;
+				serverInputField.visible = serverInputField.includeInLayout = true ;
+			}
+
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

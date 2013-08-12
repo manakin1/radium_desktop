@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   xmlns:components="com.radium.crm.view.components.*" 
+		   width="100%">
+
+	<mx:VBox top="50" left="50" width="80%">
+	
+		<mx:Text width="90%" fontWeight="bold" text="To mark a contact and their calls and SMS messages as private so they do not sync with Radium:" />
+		<mx:Text width="90%" text="1. Go to your iPhone address book into the note field. Type the word private into the field." />
+		<mx:Text width="90%" text="2. No calls or SMS messages will be sent to Radium regarding that contact." />
+		
+		<mx:Spacer height="20" />
+		
+		<mx:Button label="Ok" click="okHandler( )" />
+		
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			// EVENT HANDLERS
+			
+			private function okHandler( ):void
+			{
+				dispatchEvent( new Event( Event.COMPLETE ) ) ;
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

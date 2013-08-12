@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   xmlns:components="com.radium.crm.view.components.*" 
+		   width="100%">
+
+	<components:LoaderAnimation x="245" y="130" id="loaderAnimation" />
+	<mx:Label x="210" y="170" text="Authenticating..." />
+	
+	<mx:Button x="215" y="200" label="Cancel" styleName="UIButton" click="cancelHandler( event )" />
+	<mx:TextArea id="debugField" width="300" height="120" text="" visible="false" includeInLayout="false"/>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			// PUBLIC METHODS
+
+			public function showLoader( ):void
+			{
+				loaderAnimation.start( ) ;
+			}
+			
+			public function hideLoader( ):void
+			{
+				loaderAnimation.stop( ) ;
+			}
+			
+			public function setDebugText( value:String ):void
+			{
+				debugField.text = value ;
+			}
+			
+			// PRIVATE METHODS
+			
+
+			protected function cancelHandler( e:MouseEvent ):void
+			{
+				loaderAnimation.stop( ) ;
+				dispatchEvent( new Event( Event.CANCEL ) ) ;
+			}
+
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

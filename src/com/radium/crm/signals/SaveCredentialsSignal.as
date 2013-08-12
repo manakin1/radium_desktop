@@ -1,0 +1,1 @@
+package com.radium.crm.signals{		import org.osflash.signals.Signal ;		import com.radium.crm.model.vo.CredentialsVO ;		public class SaveCredentialsSignal extends Signal 	{				public function SaveCredentialsSignal( )		{			super( CredentialsVO ) ;		}			}}
